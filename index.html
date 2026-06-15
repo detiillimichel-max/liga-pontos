@@ -1,0 +1,1029 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+<meta name="theme-color" content="#1a1a2e">
+<meta name="description" content="Liga Pontos - Conecte os pontos coloridos e resolva os puzzles!">
+<title>Liga Pontos 🔵</title>
+<link rel="manifest" href="manifest.json">
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Nunito:wght@700;800;900&family=Orbitron:wght@700;900&display=swap');
+
+  :root {
+    --bg: #12121f;
+    --bg2: #1a1a2e;
+    --bg3: #16213e;
+    --cell: #0f0f1a;
+    --cell-border: #1e1e35;
+    --text: #e8e8f0;
+    --muted: #6b6b8a;
+    --radius: 12px;
+    --gap: 4px;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: 'Nunito', sans-serif;
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    overflow-x: hidden;
+  }
+
+  /* ── SCREENS ── */
+  .screen { display: none; width: 100%; min-height: 100vh; flex-direction: column; align-items: center; }
+  .screen.active { display: flex; }
+
+  /* ── HOME ── */
+  #home {
+    background: radial-gradient(ellipse at 50% 0%, #1e1e4a 0%, var(--bg) 60%);
+    justify-content: center;
+    gap: 32px;
+    padding: 40px 24px;
+  }
+
+  .logo-area { text-align: center; }
+  .logo-title {
+    font-family: 'Orbitron', monospace;
+    font-size: clamp(2rem, 8vw, 3rem);
+    font-weight: 900;
+    background: linear-gradient(135deg, #00d4ff, #7c3aed, #f97316);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    letter-spacing: 2px;
+    line-height: 1.1;
+  }
+  .logo-sub {
+    font-size: 1rem;
+    color: var(--muted);
+    margin-top: 8px;
+    letter-spacing: 3px;
+    text-transform: uppercase;
+  }
+
+  .dots-preview {
+    display: flex;
+    gap: 10px;
+    justify-content: center;
+    margin: 8px 0;
+  }
+  .dp { width: 18px; height: 18px; border-radius: 50%; animation: pulse 2s ease-in-out infinite; }
+  .dp:nth-child(1) { background: #00d4ff; animation-delay: 0s; }
+  .dp:nth-child(2) { background: #7c3aed; animation-delay: 0.3s; }
+  .dp:nth-child(3) { background: #f97316; animation-delay: 0.6s; }
+  .dp:nth-child(4) { background: #22c55e; animation-delay: 0.9s; }
+  .dp:nth-child(5) { background: #ef4444; animation-delay: 1.2s; }
+  @keyframes pulse { 0%,100%{transform:scale(1);opacity:0.7} 50%{transform:scale(1.3);opacity:1} }
+
+  .diff-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 14px;
+    width: 100%;
+    max-width: 380px;
+  }
+  .diff-btn {
+    background: var(--bg2);
+    border: 2px solid var(--cell-border);
+    border-radius: var(--radius);
+    padding: 20px 16px;
+    cursor: pointer;
+    transition: all 0.2s;
+    text-align: center;
+    position: relative;
+    overflow: hidden;
+  }
+  .diff-btn::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    opacity: 0;
+    transition: opacity 0.2s;
+  }
+  .diff-btn.easy::before   { background: linear-gradient(135deg,#22c55e22,#22c55e05); }
+  .diff-btn.medium::before { background: linear-gradient(135deg,#f9731622,#f9731605); }
+  .diff-btn.hard::before   { background: linear-gradient(135deg,#ef444422,#ef444405); }
+  .diff-btn.expert::before { background: linear-gradient(135deg,#7c3aed22,#7c3aed05); }
+  .diff-btn:hover::before, .diff-btn:active::before { opacity: 1; }
+  .diff-btn:hover { transform: translateY(-2px); border-color: #ffffff20; }
+  .diff-btn:active { transform: scale(0.97); }
+
+  .diff-icon { font-size: 2rem; margin-bottom: 6px; }
+  .diff-name { font-size: 1rem; font-weight: 800; }
+  .diff-lvls { font-size: 0.75rem; color: var(--muted); margin-top: 2px; }
+  .diff-btn.easy   .diff-name { color: #22c55e; }
+  .diff-btn.medium .diff-name { color: #f97316; }
+  .diff-btn.hard   .diff-name { color: #ef4444; }
+  .diff-btn.expert .diff-name { color: #a855f7; }
+
+  /* ── LEVEL SELECT ── */
+  #levelSelect {
+    background: var(--bg);
+    padding: 0;
+  }
+  .ls-header {
+    width: 100%;
+    background: var(--bg2);
+    padding: 16px 20px 14px;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    border-bottom: 1px solid var(--cell-border);
+    position: sticky;
+    top: 0;
+    z-index: 10;
+  }
+  .back-btn {
+    background: none;
+    border: none;
+    color: var(--text);
+    font-size: 1.4rem;
+    cursor: pointer;
+    padding: 4px 8px;
+    border-radius: 8px;
+    transition: background 0.15s;
+  }
+  .back-btn:hover { background: #ffffff10; }
+  .ls-title { font-size: 1.2rem; font-weight: 800; }
+  .ls-diff-badge {
+    margin-left: auto;
+    font-size: 0.7rem;
+    padding: 3px 10px;
+    border-radius: 20px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+  }
+  .level-grid {
+    display: grid;
+    grid-template-columns: repeat(5, 1fr);
+    gap: 10px;
+    padding: 20px;
+    width: 100%;
+    max-width: 420px;
+  }
+  .lvl-btn {
+    aspect-ratio: 1;
+    border-radius: 10px;
+    border: 2px solid var(--cell-border);
+    background: var(--bg2);
+    color: var(--text);
+    font-size: 0.85rem;
+    font-weight: 800;
+    cursor: pointer;
+    transition: all 0.15s;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 2px;
+    position: relative;
+  }
+  .lvl-btn:hover { transform: scale(1.05); border-color: #ffffff30; }
+  .lvl-btn:active { transform: scale(0.95); }
+  .lvl-btn.completed { background: #16213e; }
+  .lvl-btn.completed::after {
+    content: '✓';
+    position: absolute;
+    top: 3px; right: 5px;
+    font-size: 0.6rem;
+    color: #22c55e;
+  }
+  .lvl-btn .stars {
+    display: flex;
+    gap: 1px;
+    font-size: 0.45rem;
+  }
+
+  /* ── GAME ── */
+  #game {
+    padding: 0;
+    background: var(--bg);
+  }
+  .game-header {
+    width: 100%;
+    background: var(--bg2);
+    padding: 14px 20px 12px;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    border-bottom: 1px solid var(--cell-border);
+  }
+  .game-title-area { flex: 1; text-align: center; }
+  .game-diff { font-size: 0.65rem; color: var(--muted); text-transform: uppercase; letter-spacing: 2px; }
+  .game-level { font-size: 1.1rem; font-weight: 900; }
+  .icon-btn {
+    background: none;
+    border: 2px solid var(--cell-border);
+    border-radius: 50%;
+    width: 38px; height: 38px;
+    display: flex; align-items: center; justify-content: center;
+    cursor: pointer;
+    font-size: 1rem;
+    color: var(--text);
+    transition: all 0.15s;
+  }
+  .icon-btn:hover { background: #ffffff10; border-color: #ffffff30; }
+  .icon-btn:active { transform: scale(0.9); }
+
+  .game-stats {
+    display: flex;
+    justify-content: space-around;
+    padding: 10px 20px;
+    width: 100%;
+    max-width: 420px;
+  }
+  .stat { text-align: center; }
+  .stat-val { font-size: 1.2rem; font-weight: 900; color: #00d4ff; }
+  .stat-lbl { font-size: 0.65rem; color: var(--muted); text-transform: uppercase; letter-spacing: 1px; }
+
+  .progress-bar-wrap {
+    width: calc(100% - 40px);
+    max-width: 380px;
+    height: 4px;
+    background: var(--cell-border);
+    border-radius: 2px;
+    overflow: hidden;
+    margin-bottom: 8px;
+  }
+  .progress-bar-fill {
+    height: 100%;
+    background: linear-gradient(90deg, #00d4ff, #7c3aed);
+    border-radius: 2px;
+    transition: width 0.3s ease;
+  }
+
+  #canvas {
+    touch-action: none;
+    display: block;
+    cursor: crosshair;
+  }
+
+  .hint-btn {
+    position: fixed;
+    bottom: 24px;
+    right: 20px;
+    background: #f59e0b;
+    border: none;
+    border-radius: 50%;
+    width: 52px; height: 52px;
+    font-size: 1.4rem;
+    cursor: pointer;
+    display: flex; align-items: center; justify-content: center;
+    box-shadow: 0 4px 20px #f59e0b60;
+    transition: all 0.2s;
+    z-index: 20;
+  }
+  .hint-btn:hover { transform: scale(1.1); box-shadow: 0 6px 24px #f59e0b80; }
+  .hint-btn:active { transform: scale(0.95); }
+  .hint-count {
+    position: absolute;
+    top: -2px; right: -2px;
+    background: #ef4444;
+    color: #fff;
+    font-size: 0.6rem;
+    font-weight: 900;
+    border-radius: 50%;
+    width: 18px; height: 18px;
+    display: flex; align-items: center; justify-content: center;
+  }
+
+  /* ── WIN OVERLAY ── */
+  #winOverlay {
+    position: fixed;
+    inset: 0;
+    background: #000000bb;
+    display: none;
+    align-items: center;
+    justify-content: center;
+    z-index: 100;
+    backdrop-filter: blur(4px);
+  }
+  #winOverlay.show { display: flex; }
+  .win-card {
+    background: var(--bg2);
+    border: 2px solid #7c3aed40;
+    border-radius: 24px;
+    padding: 36px 32px;
+    text-align: center;
+    max-width: 320px;
+    width: 90%;
+    animation: popIn 0.4s cubic-bezier(0.34,1.56,0.64,1);
+    position: relative;
+    overflow: hidden;
+  }
+  @keyframes popIn { from{transform:scale(0.6);opacity:0} to{transform:scale(1);opacity:1} }
+  .win-card::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: radial-gradient(ellipse at 50% 0%, #7c3aed15, transparent 70%);
+    pointer-events: none;
+  }
+  .win-emoji { font-size: 3.5rem; margin-bottom: 8px; }
+  .win-title {
+    font-family: 'Orbitron', monospace;
+    font-size: 1.6rem;
+    font-weight: 900;
+    background: linear-gradient(135deg, #f59e0b, #f97316);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    margin-bottom: 4px;
+  }
+  .win-sub { color: var(--muted); font-size: 0.85rem; margin-bottom: 20px; }
+  .win-stars { font-size: 1.8rem; margin-bottom: 16px; letter-spacing: 4px; }
+  .win-stats {
+    display: flex;
+    justify-content: space-around;
+    background: var(--bg3);
+    border-radius: 12px;
+    padding: 14px;
+    margin-bottom: 24px;
+  }
+  .win-stat-val { font-size: 1.3rem; font-weight: 900; color: #00d4ff; }
+  .win-stat-lbl { font-size: 0.65rem; color: var(--muted); text-transform: uppercase; }
+  .win-btns { display: flex; flex-direction: column; gap: 10px; }
+  .win-btn {
+    border: none;
+    border-radius: 14px;
+    padding: 14px;
+    font-size: 0.95rem;
+    font-weight: 800;
+    cursor: pointer;
+    font-family: 'Nunito', sans-serif;
+    transition: all 0.15s;
+  }
+  .win-btn:active { transform: scale(0.97); }
+  .win-btn.primary { background: linear-gradient(135deg, #7c3aed, #a855f7); color: #fff; }
+  .win-btn.secondary { background: var(--bg3); color: var(--text); border: 1px solid var(--cell-border); }
+  .win-btn:hover { filter: brightness(1.1); }
+
+  /* ── PARTICLES ── */
+  .particle {
+    position: fixed;
+    pointer-events: none;
+    border-radius: 50%;
+    animation: fly 1s ease-out forwards;
+    z-index: 99;
+  }
+  @keyframes fly {
+    0% { transform: translate(0,0) scale(1); opacity: 1; }
+    100% { transform: translate(var(--dx), var(--dy)) scale(0); opacity: 0; }
+  }
+
+  /* ── TOAST ── */
+  .toast {
+    position: fixed;
+    top: 80px;
+    left: 50%;
+    transform: translateX(-50%) translateY(-20px);
+    background: var(--bg2);
+    border: 1px solid var(--cell-border);
+    border-radius: 24px;
+    padding: 10px 20px;
+    font-size: 0.85rem;
+    font-weight: 700;
+    opacity: 0;
+    transition: all 0.3s;
+    z-index: 200;
+    white-space: nowrap;
+    pointer-events: none;
+  }
+  .toast.show { opacity: 1; transform: translateX(-50%) translateY(0); }
+</style>
+</head>
+<body>
+
+<!-- ══════════ HOME ══════════ -->
+<section id="home" class="screen active">
+  <div class="logo-area">
+    <div class="logo-title">LIGA<br>PONTOS</div>
+    <div class="logo-sub">Puzzle de Conexões</div>
+  </div>
+  <div class="dots-preview">
+    <div class="dp"></div><div class="dp"></div><div class="dp"></div>
+    <div class="dp"></div><div class="dp"></div>
+  </div>
+  <div class="diff-grid">
+    <button class="diff-btn easy" onclick="selectDiff('facil')">
+      <div class="diff-icon">🌱</div>
+      <div class="diff-name">Fácil</div>
+      <div class="diff-lvls">15 níveis</div>
+    </button>
+    <button class="diff-btn medium" onclick="selectDiff('medio')">
+      <div class="diff-icon">🔥</div>
+      <div class="diff-name">Médio</div>
+      <div class="diff-lvls">15 níveis</div>
+    </button>
+    <button class="diff-btn hard" onclick="selectDiff('dificil')">
+      <div class="diff-icon">💀</div>
+      <div class="diff-name">Difícil</div>
+      <div class="diff-lvls">15 níveis</div>
+    </button>
+    <button class="diff-btn expert" onclick="selectDiff('expert')">
+      <div class="diff-icon">👑</div>
+      <div class="diff-name">Expert</div>
+      <div class="diff-lvls">15 níveis</div>
+    </button>
+  </div>
+</section>
+
+<!-- ══════════ LEVEL SELECT ══════════ -->
+<section id="levelSelect" class="screen">
+  <div class="ls-header">
+    <button class="back-btn" onclick="showScreen('home')">←</button>
+    <span class="ls-title" id="lsTitle">Níveis</span>
+    <span class="ls-diff-badge" id="lsBadge">Fácil</span>
+  </div>
+  <div class="level-grid" id="levelGrid"></div>
+</section>
+
+<!-- ══════════ GAME ══════════ -->
+<section id="game" class="screen">
+  <div class="game-header">
+    <button class="icon-btn" onclick="showScreen('levelSelect')">←</button>
+    <div class="game-title-area">
+      <div class="game-diff" id="gameDiff">MÉDIO</div>
+      <div class="game-level" id="gameLevel">Nível 1</div>
+    </div>
+    <button class="icon-btn" onclick="resetLevel()" title="Reiniciar">↺</button>
+  </div>
+  <div class="game-stats">
+    <div class="stat"><div class="stat-val" id="statMoves">0</div><div class="stat-lbl">Jogadas</div></div>
+    <div class="stat"><div class="stat-val" id="statFlows">0/0</div><div class="stat-lbl">Fluxos</div></div>
+    <div class="stat"><div class="stat-val" id="statCoverage">0%</div><div class="stat-lbl">Cobertura</div></div>
+  </div>
+  <div class="progress-bar-wrap">
+    <div class="progress-bar-fill" id="progressFill" style="width:0%"></div>
+  </div>
+  <canvas id="canvas"></canvas>
+  <button class="hint-btn" onclick="useHint()">💡<span class="hint-count" id="hintCount">3</span></button>
+</section>
+
+<!-- ══════════ WIN OVERLAY ══════════ -->
+<div id="winOverlay">
+  <div class="win-card">
+    <div class="win-emoji">🎉</div>
+    <div class="win-title">PERFEITO!</div>
+    <div class="win-sub" id="winSub">Nível concluído</div>
+    <div class="win-stars" id="winStars">⭐⭐⭐</div>
+    <div class="win-stats">
+      <div class="stat"><div class="win-stat-val" id="wMoves">0</div><div class="win-stat-lbl">Jogadas</div></div>
+      <div class="stat"><div class="win-stat-val" id="wTime">0s</div><div class="win-stat-lbl">Tempo</div></div>
+    </div>
+    <div class="win-btns">
+      <button class="win-btn primary" onclick="nextLevel()">Próximo Nível →</button>
+      <button class="win-btn secondary" onclick="resetLevel()">Jogar Novamente</button>
+      <button class="win-btn secondary" onclick="showScreen('levelSelect')">Outros Níveis</button>
+    </div>
+  </div>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script>
+// ══════════════════════════════════════════════
+// CORES
+// ══════════════════════════════════════════════
+const COLORS = {
+  vermelho:  '#ef4444',
+  azul:      '#3b82f6',
+  ciano:     '#06b6d4',
+  verde:     '#22c55e',
+  amarelo:   '#eab308',
+  laranja:   '#f97316',
+  roxo:      '#a855f7',
+  rosa:      '#ec4899',
+  marrom:    '#a16207',
+  branco:    '#e5e7eb',
+};
+
+// ══════════════════════════════════════════════
+// NÍVEIS
+// ══════════════════════════════════════════════
+const LEVELS = {
+  facil: [
+    // 1 — 5×5
+    { size:5, pairs:{ vermelho:[[0,0],[4,4]], azul:[[0,4],[4,0]], verde:[[2,0],[2,4]], amarelo:[[0,2],[4,2]], roxo:[[2,2],[3,3]] }},
+    { size:5, pairs:{ vermelho:[[0,0],[2,4]], azul:[[4,0],[2,2]], verde:[[0,4],[4,2]], amarelo:[[2,0],[0,3]], roxo:[[4,4],[3,1]] }},
+    { size:5, pairs:{ vermelho:[[0,0],[4,1]], azul:[[0,2],[4,3]], verde:[[1,0],[1,4]], amarelo:[[3,0],[3,4]], ciano:[[2,2],[2,0]] }},
+    { size:5, pairs:{ vermelho:[[0,0],[3,3]], azul:[[2,0],[2,4]], verde:[[4,0],[0,4]], amarelo:[[1,1],[3,1]], ciano:[[1,3],[3,2]] }},
+    { size:5, pairs:{ vermelho:[[0,1],[4,3]], azul:[[1,0],[3,4]], verde:[[0,3],[4,1]], amarelo:[[2,1],[2,3]], roxo:[[1,2],[3,2]] }},
+    { size:5, pairs:{ vermelho:[[0,0],[4,4]], azul:[[4,0],[0,4]], verde:[[0,2],[4,2]], amarelo:[[2,0],[2,4]], ciano:[[1,1],[3,3]] }},
+    { size:5, pairs:{ vermelho:[[0,0],[2,2]], azul:[[2,0],[4,2]], verde:[[0,4],[4,0]], amarelo:[[1,3],[3,1]], roxo:[[3,4],[1,1]] }},
+    { size:5, pairs:{ vermelho:[[0,0],[0,4]], azul:[[4,0],[4,4]], verde:[[1,2],[3,2]], amarelo:[[0,2],[4,2]], ciano:[[2,1],[2,3]] }},
+    { size:5, pairs:{ vermelho:[[0,0],[3,2]], azul:[[1,0],[4,3]], verde:[[0,4],[4,1]], amarelo:[[2,0],[1,4]], roxo:[[4,0],[2,3]] }},
+    { size:5, pairs:{ vermelho:[[0,0],[2,4]], azul:[[4,0],[0,3]], verde:[[2,0],[4,4]], amarelo:[[0,2],[4,2]], ciano:[[2,2],[1,3]] }},
+    { size:6, pairs:{ vermelho:[[0,0],[5,5]], azul:[[5,0],[0,5]], verde:[[2,0],[2,5]], amarelo:[[3,0],[3,5]], ciano:[[0,3],[5,3]], roxo:[[2,2],[3,3]] }},
+    { size:6, pairs:{ vermelho:[[0,0],[4,3]], azul:[[2,0],[5,4]], verde:[[0,5],[5,1]], amarelo:[[3,0],[1,5]], ciano:[[5,0],[0,4]], roxo:[[1,2],[4,4]] }},
+    { size:6, pairs:{ vermelho:[[0,1],[5,4]], azul:[[1,0],[4,5]], verde:[[0,4],[5,1]], amarelo:[[2,1],[3,4]], ciano:[[1,3],[4,2]], roxo:[[2,3],[3,2]] }},
+    { size:6, pairs:{ vermelho:[[0,0],[5,0]], azul:[[0,5],[5,5]], verde:[[0,2],[5,3]], amarelo:[[2,0],[3,5]], ciano:[[2,2],[3,3]], roxo:[[1,1],[4,4]] }},
+    { size:6, pairs:{ vermelho:[[0,0],[3,2]], azul:[[5,0],[2,3]], verde:[[0,5],[5,2]], amarelo:[[3,0],[2,5]], ciano:[[0,3],[5,4]], roxo:[[2,1],[4,4]] }},
+  ],
+  medio: [
+    // Nível 1 — baseado na imagem (7×6)
+{ size:7, cols:6, pairs:{
+      roxo:   [[4,0],[2,6]],
+      ciano:  [[1,1],[3,3]],
+      azul:   [[1,2],[4,2]],
+      vermelho:[[1,3],[1,6]],
+      laranja:[[2,3],[2,5]],
+      amarelo:[[1,4],[2,4]],
+      verde:  [[5,4],[5,6]],
+    }},
+{ size:7, pairs:{ vermelho:[[0,0],[6,6]], azul:[[6,0],[0,6]], verde:[[3,0],[3,6]], amarelo:[[0,3],[6,3]], ciano:[[1,1],[5,5]], roxo:[[5,1],[1,5]], laranja:[[3,3],[4,4]] }},
+    { size:7, pairs:{ vermelho:[[0,0],[4,5]], azul:[[2,0],[6,4]], verde:[[0,6],[5,1]], amarelo:[[4,0],[1,6]], ciano:[[6,0],[0,4]], roxo:[[1,2],[5,3]], laranja:[[3,2],[3,4]] }},
+    { size:7, pairs:{ vermelho:[[0,1],[6,5]], azul:[[1,0],[5,6]], verde:[[0,5],[6,1]], amarelo:[[2,1],[4,5]], ciano:[[1,3],[5,3]], roxo:[[2,3],[4,3]], laranja:[[3,1],[3,5]] }},
+    { size:7, pairs:{ vermelho:[[0,0],[5,4]], azul:[[4,0],[0,5]], verde:[[0,4],[6,3]], amarelo:[[3,0],[3,6]], ciano:[[6,0],[1,5]], roxo:[[2,2],[4,4]], laranja:[[1,1],[5,5]] }},
+    { size:7, pairs:{ vermelho:[[0,0],[6,3]], azul:[[3,0],[0,6]], verde:[[6,0],[3,6]], amarelo:[[1,2],[5,4]], ciano:[[2,1],[4,5]], roxo:[[0,3],[6,6]], laranja:[[2,3],[4,3]] }},
+    { size:7, pairs:{ vermelho:[[0,2],[6,4]], azul:[[2,0],[4,6]], verde:[[0,6],[6,0]], amarelo:[[1,1],[5,5]], ciano:[[1,5],[5,1]], roxo:[[3,1],[3,5]], laranja:[[0,4],[6,2]] }},
+    { size:7, pairs:{ vermelho:[[0,0],[3,3]], azul:[[6,0],[3,4]], verde:[[0,6],[6,3]], amarelo:[[3,0],[0,4]], ciano:[[3,6],[6,2]], roxo:[[1,3],[5,3]], laranja:[[2,2],[4,4]] }},
+    { size:7, pairs:{ vermelho:[[0,0],[5,5]], azul:[[5,0],[0,5]], verde:[[2,0],[4,6]], amarelo:[[4,0],[2,6]], ciano:[[0,3],[6,3]], roxo:[[3,1],[3,5]], laranja:[[1,2],[5,4]] }},
+    { size:7, pairs:{ vermelho:[[1,0],[5,6]], azul:[[5,0],[1,6]], verde:[[0,2],[6,4]], amarelo:[[6,0],[0,6]], ciano:[[0,4],[6,2]], roxo:[[2,1],[4,5]], laranja:[[3,2],[3,4]] }},
+    { size:8, pairs:{ vermelho:[[0,0],[7,7]], azul:[[7,0],[0,7]], verde:[[3,0],[4,7]], amarelo:[[4,0],[3,7]], ciano:[[0,4],[7,3]], roxo:[[1,1],[6,6]], laranja:[[2,2],[5,5]], marrom:[[3,3],[4,4]] }},
+    { size:8, pairs:{ vermelho:[[0,0],[5,5]], azul:[[5,0],[0,6]], verde:[[0,5],[7,2]], amarelo:[[4,0],[1,7]], ciano:[[7,0],[0,3]], roxo:[[2,2],[6,4]], laranja:[[1,3],[6,5]], marrom:[[3,1],[5,6]] }},
+    { size:8, pairs:{ vermelho:[[0,1],[7,6]], azul:[[1,0],[6,7]], verde:[[0,6],[7,1]], amarelo:[[2,1],[5,6]], ciano:[[1,3],[6,4]], roxo:[[2,4],[5,3]], laranja:[[3,2],[4,5]], marrom:[[3,5],[4,2]] }},
+    { size:8, pairs:{ vermelho:[[0,0],[7,0]], azul:[[0,7],[7,7]], verde:[[0,3],[7,4]], amarelo:[[3,0],[4,7]], ciano:[[3,3],[4,4]], roxo:[[1,1],[6,6]], laranja:[[2,2],[5,5]], marrom:[[1,6],[6,1]] }},
+    { size:8, pairs:{ vermelho:[[0,0],[4,4]], azul:[[7,0],[3,5]], verde:[[0,7],[7,3]], amarelo:[[4,0],[0,5]], ciano:[[3,0],[7,4]], roxo:[[2,3],[5,4]], laranja:[[1,2],[6,5]], marrom:[[2,5],[5,2]] }},
+  ],
+ dificil: [
+    { size:8, pairs:{ vermelho:[[0,0],[7,7]], azul:[[7,0],[0,7]], verde:[[2,0],[5,7]], amarelo:[[5,0],[2,7]], ciano:[[0,3],[7,4]], roxo:[[3,0],[4,7]], laranja:[[1,1],[6,6]], marrom:[[3,3],[4,4]] }},
+    { size:8, pairs:{ vermelho:[[0,0],[6,5]], azul:[[5,0],[0,6]], verde:[[0,5],[7,2]], amarelo:[[4,0],[1,7]], ciano:[[7,0],[0,3]], roxo:[[2,2],[6,4]], laranja:[[1,3],[6,5]], marrom:[[3,1],[5,6]] }},
+    { size:9, pairs:{ vermelho:[[0,0],[8,8]], azul:[[8,0],[0,8]], verde:[[3,0],[5,8]], amarelo:[[5,0],[3,8]], ciano:[[0,4],[8,4]], roxo:[[4,0],[4,8]], laranja:[[1,1],[7,7]], marrom:[[2,2],[6,6]], branco:[[4,3],[4,5]] }},
+    { size:9, pairs:{ vermelho:[[0,1],[8,7]], azul:[[1,0],[7,8]], verde:[[0,7],[8,1]], amarelo:[[3,1],[5,7]], ciano:[[1,4],[7,4]], roxo:[[3,4],[5,4]], laranja:[[2,2],[6,6]], marrom:[[2,6],[6,2]], branco:[[4,3],[4,5]] }},
+    { size:9, pairs:{ vermelho:[[0,0],[5,5]], azul:[[5,0],[0,6]], verde:[[0,5],[8,3]], amarelo:[[4,0],[1,8]], ciano:[[8,0],[0,4]], roxo:[[3,3],[6,5]], laranja:[[2,4],[7,4]], marrom:[[1,2],[7,6]], branco:[[4,2],[5,7]] }},
+    { size:9, pairs:{ vermelho:[[0,0],[8,3]], azul:[[3,0],[0,8]], verde:[[8,0],[3,8]], amarelo:[[1,2],[7,5]], ciano:[[2,1],[6,7]], roxo:[[0,4],[8,7]], laranja:[[2,5],[6,3]], marrom:[[4,1],[4,7]], branco:[[3,3],[5,5]] }},
+    { size:9, pairs:{ vermelho:[[0,2],[8,6]], azul:[[2,0],[6,8]], verde:[[0,8],[8,0]], amarelo:[[1,1],[7,7]], ciano:[[1,7],[7,1]], roxo:[[4,1],[4,7]], laranja:[[0,5],[8,3]], marrom:[[3,3],[5,5]], branco:[[2,4],[6,4]] }},
+    { size:9, pairs:{ vermelho:[[0,0],[4,4]], azul:[[8,0],[4,5]], verde:[[0,8],[8,4]], amarelo:[[4,0],[0,5]], ciano:[[4,8],[8,3]], roxo:[[2,4],[6,4]], laranja:[[1,3],[7,5]], marrom:[[3,2],[5,6]], branco:[[2,6],[6,2]] }},
+    { size:9, pairs:{ vermelho:[[1,0],[7,8]], azul:[[7,0],[1,8]], verde:[[0,3],[8,5]], amarelo:[[8,0],[0,8]], ciano:[[0,6],[8,2]], roxo:[[3,2],[5,6]], laranja:[[2,4],[6,4]], marrom:[[3,5],[5,3]], branco:[[4,3],[4,5]] }},
+    { size:9, pairs:{ vermelho:[[0,0],[7,5]], azul:[[5,0],[0,7]], verde:[[0,6],[8,3]], amarelo:[[5,1],[1,8]], ciano:[[8,1],[0,4]], roxo:[[3,3],[6,5]], laranja:[[2,4],[7,4]], marrom:[[1,2],[7,6]], branco:[[4,2],[5,7]] }},
+    { size:9, pairs:{ vermelho:[[0,0],[8,8]], azul:[[8,0],[0,8]], verde:[[2,0],[6,8]], amarelo:[[6,0],[2,8]], ciano:[[0,4],[8,4]], roxo:[[4,0],[4,8]], laranja:[[1,2],[7,6]], marrom:[[2,3],[6,5]], branco:[[3,4],[5,4]] }},
+    { size:9, pairs:{ vermelho:[[0,0],[6,6]], azul:[[6,0],[0,7]], verde:[[0,6],[8,2]], amarelo:[[5,1],[1,8]], ciano:[[8,0],[0,4]], roxo:[[3,3],[6,5]], laranja:[[2,4],[7,4]], marrom:[[1,2],[7,6]], branco:[[4,1],[5,7]] }},
+    { size:9, pairs:{ vermelho:[[0,1],[8,7]], azul:[[1,0],[7,8]], verde:[[0,7],[8,1]], amarelo:[[3,2],[5,6]], ciano:[[2,4],[6,4]], roxo:[[3,5],[5,3]], laranja:[[1,3],[7,5]], marrom:[[2,2],[6,6]], branco:[[4,0],[4,8]] }},
+    { size:9, pairs:{ vermelho:[[0,0],[8,5]], azul:[[5,0],[0,8]], verde:[[8,0],[3,7]], amarelo:[[3,0],[8,7]], ciano:[[0,5],[7,0]], roxo:[[2,3],[6,5]], laranja:[[1,4],[7,4]], marrom:[[3,2],[5,6]], branco:[[4,3],[4,5]] }},
+    { size:9, pairs:{ vermelho:[[0,0],[5,4]], azul:[[4,0],[0,6]], verde:[[0,4],[8,3]], amarelo:[[5,0],[1,8]], ciano:[[8,0],[0,3]], roxo:[[3,2],[6,4]], laranja:[[2,3],[7,4]], marrom:[[1,1],[7,7]], branco:[[4,2],[5,6]] }},
+  ],
+expert: [
+    { size:9, pairs:{ vermelho:[[0,0],[8,8]], azul:[[8,0],[0,8]], verde:[[3,0],[5,8]], amarelo:[[5,0],[3,8]], ciano:[[0,4],[8,4]], roxo:[[4,0],[4,8]], laranja:[[1,1],[7,7]], marrom:[[2,2],[6,6]], branco:[[3,4],[5,4]], rosa:[[4,2],[4,6]] }},
+    { size:9, pairs:{ vermelho:[[0,0],[7,6]], azul:[[6,0],[0,7]], verde:[[0,6],[8,2]], amarelo:[[5,1],[1,8]], ciano:[[8,0],[0,3]], roxo:[[2,3],[7,5]], laranja:[[3,4],[6,4]], marrom:[[1,2],[7,6]], branco:[[4,1],[5,7]], rosa:[[2,5],[6,3]] }},
+    { size:9, pairs:{ vermelho:[[0,1],[8,7]], azul:[[1,0],[7,8]], verde:[[0,7],[8,1]], amarelo:[[3,2],[5,6]], ciano:[[2,3],[6,5]], roxo:[[3,6],[5,2]], laranja:[[1,4],[7,4]], marrom:[[2,1],[6,7]], branco:[[4,0],[4,8]], rosa:[[2,6],[6,2]] }},
+    { size:9, pairs:{ vermelho:[[0,0],[5,5]], azul:[[5,0],[0,6]], verde:[[0,5],[8,3]], amarelo:[[4,1],[1,7]], ciano:[[8,1],[0,4]], roxo:[[3,3],[6,5]], laranja:[[2,4],[7,4]], marrom:[[1,2],[7,6]], branco:[[4,2],[5,7]], rosa:[[3,1],[6,7]] }},
+    { size:9, pairs:{ vermelho:[[0,0],[8,4]], azul:[[4,0],[0,8]], verde:[[8,0],[4,8]], amarelo:[[1,2],[7,6]], ciano:[[2,1],[6,7]], roxo:[[0,4],[8,7]], laranja:[[2,5],[6,3]], marrom:[[4,1],[4,7]], branco:[[3,3],[5,5]], rosa:[[1,5],[7,3]] }},
+    { size:9, pairs:{ vermelho:[[0,2],[8,6]], azul:[[2,0],[6,8]], verde:[[0,8],[8,0]], amarelo:[[1,1],[7,7]], ciano:[[1,7],[7,1]], roxo:[[4,1],[4,7]], laranja:[[0,5],[8,3]], marrom:[[3,3],[5,5]], branco:[[2,4],[6,4]], rosa:[[3,2],[5,6]] }},
+    { size:9, pairs:{ vermelho:[[0,0],[4,5]], azul:[[8,0],[4,4]], verde:[[0,8],[8,4]], amarelo:[[4,0],[0,4]], ciano:[[4,8],[8,3]], roxo:[[2,3],[6,5]], laranja:[[1,4],[7,4]], marrom:[[3,2],[5,6]], branco:[[2,6],[6,2]], rosa:[[3,1],[5,7]] }},
+    { size:9, pairs:{ vermelho:[[1,0],[7,8]], azul:[[7,0],[1,8]], verde:[[0,4],[8,4]], amarelo:[[8,0],[0,8]], ciano:[[0,6],[8,2]], roxo:[[3,2],[5,6]], laranja:[[2,4],[6,4]], marrom:[[3,5],[5,3]], branco:[[4,1],[4,7]], rosa:[[2,3],[6,5]] }},
+    { size:9, pairs:{ vermelho:[[0,0],[7,5]], azul:[[5,0],[0,7]], verde:[[0,6],[8,3]], amarelo:[[5,1],[1,8]], ciano:[[8,1],[0,4]], roxo:[[3,3],[6,5]], laranja:[[2,4],[7,4]], marrom:[[1,3],[7,5]], branco:[[4,1],[5,7]], rosa:[[3,2],[6,6]] }},
+    { size:9, pairs:{ vermelho:[[0,0],[8,8]], azul:[[8,0],[0,8]], verde:[[2,0],[6,8]], amarelo:[[6,0],[2,8]], ciano:[[0,4],[8,4]], roxo:[[4,0],[4,8]], laranja:[[1,2],[7,6]], marrom:[[2,3],[6,5]], branco:[[3,3],[5,5]], rosa:[[3,5],[5,3]] }},
+    { size:9, pairs:{ vermelho:[[0,0],[6,6]], azul:[[6,0],[0,7]], verde:[[0,6],[8,2]], amarelo:[[5,1],[1,8]], ciano:[[8,0],[0,3]], roxo:[[3,3],[6,5]], laranja:[[2,4],[7,4]], marrom:[[1,2],[7,6]], branco:[[4,1],[5,7]], rosa:[[2,5],[6,3]] }},
+    { size:9, pairs:{ vermelho:[[0,1],[8,7]], azul:[[1,0],[7,8]], verde:[[0,7],[8,1]], amarelo:[[3,1],[5,7]], ciano:[[1,4],[7,4]], roxo:[[3,4],[5,4]], laranja:[[2,2],[6,6]], marrom:[[2,6],[6,2]], branco:[[4,0],[4,8]], rosa:[[1,3],[7,5]] }},
+    { size:9, pairs:{ vermelho:[[0,0],[8,3]], azul:[[3,0],[0,8]], verde:[[8,0],[3,8]], amarelo:[[1,2],[7,5]], ciano:[[2,1],[6,7]], roxo:[[0,5],[8,6]], laranja:[[2,5],[6,3]], marrom:[[4,1],[4,7]], branco:[[3,3],[5,5]], rosa:[[1,6],[7,2]] }},
+    { size:9, pairs:{ vermelho:[[0,0],[5,5]], azul:[[5,0],[0,5]], verde:[[0,4],[8,4]], amarelo:[[4,0],[0,7]], ciano:[[8,0],[0,2]], roxo:[[3,2],[6,5]], laranja:[[2,3],[7,5]], marrom:[[1,1],[7,7]], branco:[[4,2],[5,6]], rosa:[[2,6],[6,2]] }},
+    { size:9, pairs:{ vermelho:[[0,0],[6,5]], azul:[[5,0],[0,6]], verde:[[0,5],[8,3]], amarelo:[[5,1],[1,8]], ciano:[[8,1],[0,4]], roxo:[[3,3],[6,5]], laranja:[[2,4],[7,4]], marrom:[[1,2],[7,6]], branco:[[4,2],[5,7]], rosa:[[3,1],[6,7]] }},
+  ]
+};
+
+// ══════════════════════════════════════════════
+// ESTADO GLOBAL
+// ══════════════════════════════════════════════
+let currentDiff = 'medio';
+let currentLevelIdx = 0;
+let levelData = null;
+let gridSize = 7;
+let gridCols = 6;
+let gridRows = 7;
+let cellSize = 48;
+let paths = {};        // cor -> [[c,r],...]
+let dots = {};         // "c,r" -> cor
+let drawing = null;    // {color, path}
+let moves = 0;
+let hints = 3;
+let startTime = 0;
+let progress = {};     // localStorage
+let canvas, ctx;
+
+const diffNames = { facil:'Fácil', medio:'Médio', dificil:'Difícil', expert:'Expert' };
+const diffColors = { facil:'#22c55e', medio:'#f97316', dificil:'#ef4444', expert:'#a855f7' };
+// ══════════════════════════════════════════════
+// UTILIDADES
+// ══════════════════════════════════════════════
+function key(c,r){ return `${c},${r}`; }
+function showScreen(id){
+  document.querySelectorAll('.screen').forEach(s=>s.classList.remove('active'));
+  document.getElementById(id).classList.add('active');
+}
+function loadProgress(){
+  try{ return JSON.parse(localStorage.getItem('ligapontos_progress')||'{}'); }
+  catch(e){ return {}; }
+}
+function saveProgress(){
+  localStorage.setItem('ligapontos_progress', JSON.stringify(progress));
+}
+function showToast(msg, duration=2000){
+  const t = document.getElementById('toast');
+  t.textContent = msg;
+  t.classList.add('show');
+  setTimeout(()=>t.classList.remove('show'), duration);
+    }
+// ══════════════════════════════════════════════
+// DIFF / LEVEL SELECT
+// ══════════════════════════════════════════════
+function selectDiff(diff){
+  currentDiff = diff;
+  progress = loadProgress();
+  const badge = document.getElementById('lsBadge');
+  badge.textContent = diffNames[diff];
+  badge.style.background = diffColors[diff]+'33';
+  badge.style.color = diffColors[diff];
+  document.getElementById('lsTitle').textContent = diffNames[diff];
+  buildLevelGrid();
+  showScreen('levelSelect');
+}
+
+function buildLevelGrid(){
+  const grid = document.getElementById('levelGrid');
+  grid.innerHTML = '';
+  const lvls = LEVELS[currentDiff];
+  lvls.forEach((_, i) => {
+    const k = `${currentDiff}_${i}`;
+    const done = progress[k];
+    const btn = document.createElement('button');
+    btn.className = 'lvl-btn' + (done ? ' completed' : '');
+    btn.style.borderColor = done ? diffColors[currentDiff]+'60' : '';
+    const stars = done ? (done.stars||1) : 0;
+    btn.innerHTML = `<span>${i+1}</span>${done ? `<span class="stars">${'⭐'.repeat(stars)}</span>` : ''}`;
+    btn.onclick = () => startLevel(i);
+    grid.appendChild(btn);
+  });
+  }
+// ══════════════════════════════════════════════
+// INICIAR NÍVEL
+// ══════════════════════════════════════════════
+function startLevel(idx){
+  currentLevelIdx = idx;
+  levelData = LEVELS[currentDiff][idx];
+  gridSize = levelData.size || 7;
+  gridCols = levelData.cols || gridSize;
+  gridRows = levelData.rows || gridSize;
+  moves = 0;
+  hints = 3;
+  paths = {};
+  dots = {};
+  drawing = null;
+  document.getElementById('hintCount').textContent = hints;
+  document.getElementById('gameDiff').textContent = diffNames[currentDiff].toUpperCase();
+  document.getElementById('gameLevel').textContent = `Nível ${idx+1}`;
+  document.getElementById('statMoves').textContent = '0';
+  document.getElementById('statFlows').textContent = `0/${Object.keys(levelData.pairs).length}`;
+  document.getElementById('statCoverage').textContent = '0%';
+  document.getElementById('progressFill').style.width = '0%';
+  document.getElementById('winOverlay').classList.remove('show');
+// Inicializar dots
+  for(const [color, pts] of Object.entries(levelData.pairs)){
+    dots[key(pts[0][0], pts[0][1])] = color;
+    dots[key(pts[1][0], pts[1][1])] = color;
+  }
+
+  setupCanvas();
+  showScreen('game');
+  startTime = Date.now();
+  requestAnimationFrame(render);
+}
+
+function setupCanvas(){
+  canvas = document.getElementById('canvas');
+  ctx = canvas.getContext('2d');
+  const maxW = Math.min(window.innerWidth, 480) - 20;
+  const maxH = window.innerHeight - 180;
+  cellSize = Math.floor(Math.min(maxW / gridCols, maxH / gridRows));
+  canvas.width  = cellSize * gridCols;
+  canvas.height = cellSize * gridRows;
+  canvas.style.width  = canvas.width  + 'px';
+  canvas.style.height = canvas.height + 'px';
+    }
+ // ══════════════════════════════════════════════
+// RENDER
+// ══════════════════════════════════════════════
+function render(){
+  if(!ctx) return;
+  const W = canvas.width, H = canvas.height;
+  ctx.clearRect(0, 0, W, H);
+
+  // Grid
+  for(let r=0; r<gridRows; r++){
+    for(let c=0; c<gridCols; c++){
+      const x = c*cellSize, y = r*cellSize;
+      ctx.fillStyle = '#0d0d1a';
+      roundRect(ctx, x+2, y+2, cellSize-4, cellSize-4, 8);
+      ctx.fill();
+    }
+      }
+// Paths
+  for(const [color, path] of Object.entries(paths)){
+    if(path.length < 2) continue;
+    ctx.strokeStyle = COLORS[color];
+    ctx.lineWidth = cellSize * 0.38;
+    ctx.lineCap = 'round';
+    ctx.lineJoin = 'round';
+    ctx.globalAlpha = 0.85;
+    ctx.beginPath();
+    ctx.moveTo(path[0][0]*cellSize + cellSize/2, path[0][1]*cellSize + cellSize/2);
+    for(let i=1;i<path.length;i++)
+      ctx.lineTo(path[i][0]*cellSize + cellSize/2, path[i][1]*cellSize + cellSize/2);
+    ctx.stroke();
+    ctx.globalAlpha = 1;
+ }
+// Drawing path
+  if(drawing && drawing.path.length >= 2){
+    const color = drawing.color;
+    ctx.strokeStyle = COLORS[color];
+    ctx.lineWidth = cellSize * 0.38;
+    ctx.lineCap = 'round';
+    ctx.lineJoin = 'round';
+    ctx.globalAlpha = 0.9;
+    ctx.beginPath();
+    const p = drawing.path;
+    ctx.moveTo(p[0][0]*cellSize+cellSize/2, p[0][1]*cellSize+cellSize/2);
+    for(let i=1;i<p.length;i++)
+      ctx.lineTo(p[i][0]*cellSize+cellSize/2, p[i][1]*cellSize+cellSize/2);
+    ctx.stroke();
+    ctx.globalAlpha = 1;
+ }
+// Dots
+  for(const [k2, color] of Object.entries(dots)){
+    const [c,r] = k2.split(',').map(Number);
+    const x = c*cellSize+cellSize/2, y = r*cellSize+cellSize/2;
+    const rad = cellSize*0.3;
+    ctx.fillStyle = COLORS[color];
+    ctx.shadowColor = COLORS[color];
+    ctx.shadowBlur = 12;
+    ctx.beginPath();
+    ctx.arc(x, y, rad, 0, Math.PI*2);
+    ctx.fill();
+    ctx.shadowBlur = 0;
+    // Inner highlight
+    ctx.fillStyle = '#ffffff30';
+    ctx.beginPath();
+    ctx.arc(x-rad*0.25, y-rad*0.25, rad*0.35, 0, Math.PI*2);
+    ctx.fill();
+  }
+}
+function roundRect(ctx, x, y, w, h, r){
+  ctx.beginPath();
+  ctx.moveTo(x+r,y);
+  ctx.lineTo(x+w-r,y);
+  ctx.arcTo(x+w,y,x+w,y+r,r);
+  ctx.lineTo(x+w,y+h-r);
+  ctx.arcTo(x+w,y+h,x+w-r,y+h,r);
+  ctx.lineTo(x+r,y+h);
+  ctx.arcTo(x,y+h,x,y+h-r,r);
+  ctx.lineTo(x,y+r);
+  ctx.arcTo(x,y,x+r,y,r);
+  ctx.closePath();
+}
+
+// ══════════════════════════════════════════════
+// INPUT
+// ══════════════════════════════════════════════
+function getCellFromEvent(e){
+  const rect = canvas.getBoundingClientRect();
+  const scaleX = canvas.width / rect.width;
+  const scaleY = canvas.height / rect.height;
+  let cx, cy;
+  if(e.touches){
+    cx = (e.touches[0].clientX - rect.left) * scaleX;
+    cy = (e.touches[0].clientY - rect.top)  * scaleY;
+  } else {
+    cx = (e.clientX - rect.left) * scaleX;
+    cy = (e.clientY - rect.top)  * scaleY;
+  }
+  return [Math.floor(cx/cellSize), Math.floor(cy/cellSize)];
+}
+
+function inBounds(c,r){ return c>=0&&c<gridCols&&r>=0&&r<gridRows; }
+
+function onStart(e){
+  e.preventDefault();
+  const [c,r] = getCellFromEvent(e);
+  if(!inBounds(c,r)) return;
+  const k2 = key(c,r);
+  const color = dots[k2];
+  if(!color) return;
+// Se já há um path desta cor, limpar
+  if(paths[color]) { clearPath(color); }
+  drawing = { color, path: [[c,r]] };
+  render();
+}
+
+function onMove(e){
+  e.preventDefault();
+  if(!drawing) return;
+  const [c,r] = getCellFromEvent(e);
+  if(!inBounds(c,r)) return;
+  const p = drawing.path;
+  const last = p[p.length-1];
+  if(c===last[0]&&r===last[1]) return;
+
+  // Só permitir adjacente
+  const dc=Math.abs(c-last[0]), dr=Math.abs(r-last[1]);
+  if(dc+dr!==1) return;
+
+  // Voltar atrás no path (backtrack)
+  if(p.length>=2){
+    const prev = p[p.length-2];
+    if(c===prev[0]&&r===prev[1]){ p.pop(); render(); return; }
+  }  
+// Verificar célula bloqueada por outro path
+  const k2 = key(c,r);
+  for(const [col, path2] of Object.entries(paths)){
+    if(col===drawing.color) continue;
+    if(path2.some(pt=>pt[0]===c&&pt[1]===r)){
+      if(!dots[k2]){ return; } // Bloqueado
+    }
+  }
+
+  // Se encontrar ponto de outra cor, parar
+  if(dots[k2] && dots[k2]!==drawing.color) return;
+
+  p.push([c,r]);
+
+  // Verificar se chegou ao destino
+  if(dots[k2]===drawing.color && p.length>1){
+    commitPath();
+    return;
+  }
+
+  render();
+}
+
+function onEnd(e){
+  if(!drawing) return;
+  drawing = null;
+  render();
+}
+
+function commitPath(){
+  const {color, path} = drawing;
+  paths[color] = [...path];
+  drawing = null;
+  moves++;
+  document.getElementById('statMoves').textContent = moves;
+  updateStats();
+  render();
+  checkWin();
+  }
+function clearPath(color){
+  delete paths[color];
+  updateStats();
+}
+
+function updateStats(){
+  const pairs = Object.keys(levelData.pairs).length;
+  const done  = Object.keys(paths).length;
+  document.getElementById('statFlows').textContent = `${done}/${pairs}`;
+
+  // Coverage: contar todas as células nos paths
+  const covered = new Set();
+  for(const path of Object.values(paths)){
+    path.forEach(([c,r])=>covered.add(key(c,r)));
+  }
+  const total = gridCols * gridRows;
+  const pct = Math.round(covered.size/total*100);
+  document.getElementById('statCoverage').textContent = `${pct}%`;
+  document.getElementById('progressFill').style.width = `${pct}%`;
+}
+// ══════════════════════════════════════════════
+// WIN CHECK
+// ══════════════════════════════════════════════
+function checkWin(){
+  const pairs = Object.keys(levelData.pairs);
+  const connected = pairs.every(c => {
+    const path = paths[c];
+    if(!path||path.length<2) return false;
+    const [a,b] = levelData.pairs[c];
+    const first = path[0], last = path[path.length-1];
+    return (first[0]===a[0]&&first[1]===a[1]&&last[0]===b[0]&&last[1]===b[1]) ||
+           (first[0]===b[0]&&first[1]===b[1]&&last[0]===a[0]&&last[1]===a[1]);
+  });
+  if(!connected) return;
+
+  // Verificar cobertura total
+  const covered = new Set();
+  for(const path of Object.values(paths))
+    path.forEach(([c,r])=>covered.add(key(c,r)));
+  const total = gridCols*gridRows;
+  if(covered.size<total){
+    showToast('⚠️ Preencha todas as células!');
+    return;
+  }
+
+  showWin();
+}
+
+function showWin(){
+  const elapsed = Math.round((Date.now()-startTime)/1000);
+  const pairs = Object.keys(levelData.pairs).length;
+  const optMoves = pairs * 2;
+  const stars = moves <= optMoves ? 3 : moves <= optMoves*1.8 ? 2 : 1;
+
+  const k = `${currentDiff}_${currentLevelIdx}`;
+  const prev = progress[k];
+  progress[k] = { stars: Math.max(stars, prev?.stars||0), moves, time: elapsed };
+  saveProgress();
+
+  document.getElementById('winSub').textContent = `${diffNames[currentDiff]} • Nível ${currentLevelIdx+1}`;
+  document.getElementById('winStars').textContent = '⭐'.repeat(stars) + '☆'.repeat(3-stars);
+  document.getElementById('wMoves').textContent = moves;
+  document.getElementById('wTime').textContent = `${elapsed}s`;
+
+  spawnParticles();
+  document.getElementById('winOverlay').classList.add('show');
+}
+
+function spawnParticles(){
+  const colors = ['#00d4ff','#a855f7','#f59e0b','#22c55e','#ef4444','#f97316'];
+  for(let i=0;i<30;i++){
+    const p = document.createElement('div');
+    p.className='particle';
+    const size=Math.random()*12+6;
+    p.style.cssText=`
+      width:${size}px;height:${size}px;
+      background:${colors[Math.floor(Math.random()*colors.length)]};
+      left:${Math.random()*100}vw;
+      top:${Math.random()*40+30}vh;
+      --dx:${(Math.random()-0.5)*200}px;
+      --dy:${-(Math.random()*200+100)}px;
+      animation-duration:${Math.random()*0.5+0.8}s;
+      animation-delay:${Math.random()*0.3}s;
+    `;
+    document.body.appendChild(p);
+    setTimeout(()=>p.remove(),1500);
+  }
+}
+
+function nextLevel(){
+  const total = LEVELS[currentDiff].length;
+  if(currentLevelIdx+1 < total){
+    document.getElementById('winOverlay').classList.remove('show');
+    startLevel(currentLevelIdx+1);
+  } else {
+    showToast('🏆 Você completou todos os níveis!', 3000);
+    showScreen('levelSelect');
+  }
+    }
+function resetLevel(){
+  document.getElementById('winOverlay').classList.remove('show');
+  startLevel(currentLevelIdx);
+}
+
+// ══════════════════════════════════════════════
+// HINT
+// ══════════════════════════════════════════════
+function useHint(){
+  if(hints<=0){ showToast('Sem dicas disponíveis!'); return; }
+  // Pegar uma cor não conectada e mostrar o primeiro passo
+  const pairs = levelData.pairs;
+  for(const [color, [a,b]] of Object.entries(pairs)){
+    if(!paths[color]){
+      // Mostrar os dois dots piscando
+      showToast(`💡 Conecte o ponto ${color}!`);
+      hints--;
+      document.getElementById('hintCount').textContent = hints;
+      return;
+    }
+  }
+  showToast('Todos os fluxos conectados!');
+}
+
+// ══════════════════════════════════════════════
+// EVENTOS CANVAS
+// ══════════════════════════════════════════════
+window.addEventListener('load', () => {
+  canvas = document.getElementById('canvas');
+  ctx = canvas.getContext('2d');
+  progress = loadProgress();
+
+  canvas.addEventListener('mousedown', onStart);
+  canvas.addEventListener('mousemove', onMove);
+  canvas.addEventListener('mouseup',   onEnd);
+  canvas.addEventListener('touchstart', onStart, {passive:false});
+  canvas.addEventListener('touchmove',  onMove,  {passive:false});
+  canvas.addEventListener('touchend',   onEnd,   {passive:false});
+
+  window.addEventListener('resize', ()=>{
+    if(levelData){ setupCanvas(); render(); }
+  });
+});
+</script>
+</body>
+</html>    
+      
+                 
+  
+        
