@@ -510,26 +510,40 @@ const COLORS = {
 // ══════════════════════════════════════════════
 const LEVELS = {
   facil: [
-    // 1 — 5×5
-    { size:5, pairs:{ vermelho:[[0,0],[4,4]], azul:[[0,4],[4,0]], verde:[[2,0],[2,4]], amarelo:[[0,2],[4,2]], roxo:[[2,2],[3,3]] }},
-    { size:5, pairs:{ vermelho:[[0,0],[2,4]], azul:[[4,0],[2,2]], verde:[[0,4],[4,2]], amarelo:[[2,0],[0,3]], roxo:[[4,4],[3,1]] }},
-    { size:5, pairs:{ vermelho:[[0,0],[4,1]], azul:[[0,2],[4,3]], verde:[[1,0],[1,4]], amarelo:[[3,0],[3,4]], ciano:[[2,2],[2,0]] }},
-    { size:5, pairs:{ vermelho:[[0,0],[3,3]], azul:[[2,0],[2,4]], verde:[[4,0],[0,4]], amarelo:[[1,1],[3,1]], ciano:[[1,3],[3,2]] }},
-    { size:5, pairs:{ vermelho:[[0,1],[4,3]], azul:[[1,0],[3,4]], verde:[[0,3],[4,1]], amarelo:[[2,1],[2,3]], roxo:[[1,2],[3,2]] }},
-    { size:5, pairs:{ vermelho:[[0,0],[4,4]], azul:[[4,0],[0,4]], verde:[[0,2],[4,2]], amarelo:[[2,0],[2,4]], ciano:[[1,1],[3,3]] }},
-    { size:5, pairs:{ vermelho:[[0,0],[2,2]], azul:[[2,0],[4,2]], verde:[[0,4],[4,0]], amarelo:[[1,3],[3,1]], roxo:[[3,4],[1,1]] }},
-    { size:5, pairs:{ vermelho:[[0,0],[0,4]], azul:[[4,0],[4,4]], verde:[[1,2],[3,2]], amarelo:[[0,2],[4,2]], ciano:[[2,1],[2,3]] }},
-    { size:5, pairs:{ vermelho:[[0,0],[3,2]], azul:[[1,0],[4,3]], verde:[[0,4],[4,1]], amarelo:[[2,0],[1,4]], roxo:[[4,0],[2,3]] }},
-    { size:5, pairs:{ vermelho:[[0,0],[2,4]], azul:[[4,0],[0,3]], verde:[[2,0],[4,4]], amarelo:[[0,2],[4,2]], ciano:[[2,2],[1,3]] }},
-    { size:6, pairs:{ vermelho:[[0,0],[5,5]], azul:[[5,0],[0,5]], verde:[[2,0],[2,5]], amarelo:[[3,0],[3,5]], ciano:[[0,3],[5,3]], roxo:[[2,2],[3,3]] }},
-    { size:6, pairs:{ vermelho:[[0,0],[4,3]], azul:[[2,0],[5,4]], verde:[[0,5],[5,1]], amarelo:[[3,0],[1,5]], ciano:[[5,0],[0,4]], roxo:[[1,2],[4,4]] }},
-    { size:6, pairs:{ vermelho:[[0,1],[5,4]], azul:[[1,0],[4,5]], verde:[[0,4],[5,1]], amarelo:[[2,1],[3,4]], ciano:[[1,3],[4,2]], roxo:[[2,3],[3,2]] }},
-    { size:6, pairs:{ vermelho:[[0,0],[5,0]], azul:[[0,5],[5,5]], verde:[[0,2],[5,3]], amarelo:[[2,0],[3,5]], ciano:[[2,2],[3,3]], roxo:[[1,1],[4,4]] }},
-    { size:6, pairs:{ vermelho:[[0,0],[3,2]], azul:[[5,0],[2,3]], verde:[[0,5],[5,2]], amarelo:[[3,0],[2,5]], ciano:[[0,3],[5,4]], roxo:[[2,1],[4,4]] }},
+    // N1 5×5 — baseado na foto (vermelho, verde, azul, amarelo, roxo)
+    { size:5, pairs:{ vermelho:[[0,0],[4,3]], verde:[[1,0],[1,4]], azul:[[4,0],[0,4]], amarelo:[[0,2],[4,2]], roxo:[[2,2],[3,3]] }},
+    // N2 5×5
+    { size:5, pairs:{ vermelho:[[0,0],[4,0]], azul:[[0,4],[4,4]], verde:[[2,0],[2,4]], amarelo:[[0,2],[4,2]], roxo:[[1,1],[3,3]] }},
+    // N3 5×5
+    { size:5, pairs:{ vermelho:[[0,0],[0,4]], azul:[[4,0],[4,4]], verde:[[0,2],[4,2]], amarelo:[[2,0],[2,4]], roxo:[[1,3],[3,1]] }},
+    // N4 5×5
+    { size:5, pairs:{ vermelho:[[0,0],[4,4]], azul:[[4,0],[0,4]], verde:[[2,0],[2,4]], amarelo:[[0,3],[4,1]], roxo:[[1,2],[3,2]] }},
+    // N5 5×5
+    { size:5, pairs:{ vermelho:[[0,0],[2,4]], azul:[[4,0],[4,4]], verde:[[0,4],[4,2]], amarelo:[[2,0],[0,3]], roxo:[[3,1],[1,3]] }},
+    // N6 5×5
+    { size:5, pairs:{ vermelho:[[0,1],[4,3]], azul:[[1,0],[3,4]], verde:[[4,0],[0,4]], amarelo:[[4,1],[0,3]], roxo:[[2,0],[2,4]] }},
+    // N7 5×5
+    { size:5, pairs:{ vermelho:[[0,0],[3,3]], azul:[[4,0],[1,3]], verde:[[0,4],[4,4]], amarelo:[[1,0],[1,4]], roxo:[[3,0],[3,4]] }},
+    // N8 5×5
+    { size:5, pairs:{ vermelho:[[0,0],[4,2]], azul:[[4,0],[0,3]], verde:[[2,0],[2,4]], amarelo:[[0,4],[4,4]], roxo:[[1,2],[3,3]] }},
+    // N9 5×5
+    { size:5, pairs:{ vermelho:[[0,0],[0,4]], azul:[[4,0],[2,2]], verde:[[1,0],[3,4]], amarelo:[[4,4],[2,4]], roxo:[[1,2],[4,2]] }},
+    // N10 5×5
+    { size:5, pairs:{ vermelho:[[0,0],[4,1]], azul:[[4,0],[0,1]], verde:[[0,4],[4,4]], amarelo:[[2,0],[2,4]], roxo:[[1,2],[3,2]] }},
+    // N11 6×6
+    { size:6, pairs:{ vermelho:[[0,0],[5,0]], azul:[[0,5],[5,5]], verde:[[0,3],[5,2]], amarelo:[[2,0],[3,5]], roxo:[[1,2],[4,3]], ciano:[[2,3],[3,2]] }},
+    // N12 6×6
+    { size:6, pairs:{ vermelho:[[0,0],[0,5]], azul:[[5,0],[5,5]], verde:[[0,3],[5,2]], amarelo:[[2,0],[4,5]], roxo:[[1,1],[4,4]], ciano:[[2,2],[3,3]] }},
+    // N13 6×6
+    { size:6, pairs:{ vermelho:[[0,0],[5,5]], azul:[[5,0],[0,5]], verde:[[2,0],[3,5]], amarelo:[[3,0],[2,5]], roxo:[[0,2],[5,3]], ciano:[[1,3],[4,2]] }},
+    // N14 6×6
+    { size:6, pairs:{ vermelho:[[0,0],[5,1]], azul:[[5,0],[0,1]], verde:[[0,5],[5,4]], amarelo:[[2,0],[2,5]], roxo:[[0,3],[5,3]], ciano:[[1,2],[4,3]] }},
+    // N15 6×6
+    { size:6, pairs:{ vermelho:[[0,0],[5,0]], azul:[[0,5],[5,5]], verde:[[0,2],[5,3]], amarelo:[[2,0],[3,5]], roxo:[[2,2],[3,3]], ciano:[[1,4],[4,1]] }},
   ],
   medio: [
     // Nível 1 — baseado na imagem (7×6)
-{ size:7, cols:6, pairs:{
+ { size:7, cols:6, pairs:{
       roxo:   [[4,0],[2,6]],
       ciano:  [[1,1],[3,3]],
       azul:   [[1,2],[4,2]],
@@ -538,7 +552,7 @@ const LEVELS = {
       amarelo:[[1,4],[2,4]],
       verde:  [[5,4],[5,6]],
     }},
-{ size:7, pairs:{ vermelho:[[0,0],[6,6]], azul:[[6,0],[0,6]], verde:[[3,0],[3,6]], amarelo:[[0,3],[6,3]], ciano:[[1,1],[5,5]], roxo:[[5,1],[1,5]], laranja:[[3,3],[4,4]] }},
+    { size:7, pairs:{ vermelho:[[0,0],[6,6]], azul:[[6,0],[0,6]], verde:[[3,0],[3,6]], amarelo:[[0,3],[6,3]], ciano:[[1,1],[5,5]], roxo:[[5,1],[1,5]], laranja:[[3,3],[4,4]] }},
     { size:7, pairs:{ vermelho:[[0,0],[4,5]], azul:[[2,0],[6,4]], verde:[[0,6],[5,1]], amarelo:[[4,0],[1,6]], ciano:[[6,0],[0,4]], roxo:[[1,2],[5,3]], laranja:[[3,2],[3,4]] }},
     { size:7, pairs:{ vermelho:[[0,1],[6,5]], azul:[[1,0],[5,6]], verde:[[0,5],[6,1]], amarelo:[[2,1],[4,5]], ciano:[[1,3],[5,3]], roxo:[[2,3],[4,3]], laranja:[[3,1],[3,5]] }},
     { size:7, pairs:{ vermelho:[[0,0],[5,4]], azul:[[4,0],[0,5]], verde:[[0,4],[6,3]], amarelo:[[3,0],[3,6]], ciano:[[6,0],[1,5]], roxo:[[2,2],[4,4]], laranja:[[1,1],[5,5]] }},
@@ -553,8 +567,8 @@ const LEVELS = {
     { size:8, pairs:{ vermelho:[[0,0],[7,0]], azul:[[0,7],[7,7]], verde:[[0,3],[7,4]], amarelo:[[3,0],[4,7]], ciano:[[3,3],[4,4]], roxo:[[1,1],[6,6]], laranja:[[2,2],[5,5]], marrom:[[1,6],[6,1]] }},
     { size:8, pairs:{ vermelho:[[0,0],[4,4]], azul:[[7,0],[3,5]], verde:[[0,7],[7,3]], amarelo:[[4,0],[0,5]], ciano:[[3,0],[7,4]], roxo:[[2,3],[5,4]], laranja:[[1,2],[6,5]], marrom:[[2,5],[5,2]] }},
   ],
- dificil: [
-    { size:8, pairs:{ vermelho:[[0,0],[7,7]], azul:[[7,0],[0,7]], verde:[[2,0],[5,7]], amarelo:[[5,0],[2,7]], ciano:[[0,3],[7,4]], roxo:[[3,0],[4,7]], laranja:[[1,1],[6,6]], marrom:[[3,3],[4,4]] }},
+  dificil: [
+      { size:8, pairs:{ vermelho:[[0,0],[7,7]], azul:[[7,0],[0,7]], verde:[[2,0],[5,7]], amarelo:[[5,0],[2,7]], ciano:[[0,3],[7,4]], roxo:[[3,0],[4,7]], laranja:[[1,1],[6,6]], marrom:[[3,3],[4,4]] }},
     { size:8, pairs:{ vermelho:[[0,0],[6,5]], azul:[[5,0],[0,6]], verde:[[0,5],[7,2]], amarelo:[[4,0],[1,7]], ciano:[[7,0],[0,3]], roxo:[[2,2],[6,4]], laranja:[[1,3],[6,5]], marrom:[[3,1],[5,6]] }},
     { size:9, pairs:{ vermelho:[[0,0],[8,8]], azul:[[8,0],[0,8]], verde:[[3,0],[5,8]], amarelo:[[5,0],[3,8]], ciano:[[0,4],[8,4]], roxo:[[4,0],[4,8]], laranja:[[1,1],[7,7]], marrom:[[2,2],[6,6]], branco:[[4,3],[4,5]] }},
     { size:9, pairs:{ vermelho:[[0,1],[8,7]], azul:[[1,0],[7,8]], verde:[[0,7],[8,1]], amarelo:[[3,1],[5,7]], ciano:[[1,4],[7,4]], roxo:[[3,4],[5,4]], laranja:[[2,2],[6,6]], marrom:[[2,6],[6,2]], branco:[[4,3],[4,5]] }},
@@ -570,8 +584,8 @@ const LEVELS = {
     { size:9, pairs:{ vermelho:[[0,0],[8,5]], azul:[[5,0],[0,8]], verde:[[8,0],[3,7]], amarelo:[[3,0],[8,7]], ciano:[[0,5],[7,0]], roxo:[[2,3],[6,5]], laranja:[[1,4],[7,4]], marrom:[[3,2],[5,6]], branco:[[4,3],[4,5]] }},
     { size:9, pairs:{ vermelho:[[0,0],[5,4]], azul:[[4,0],[0,6]], verde:[[0,4],[8,3]], amarelo:[[5,0],[1,8]], ciano:[[8,0],[0,3]], roxo:[[3,2],[6,4]], laranja:[[2,3],[7,4]], marrom:[[1,1],[7,7]], branco:[[4,2],[5,6]] }},
   ],
-expert: [
-    { size:9, pairs:{ vermelho:[[0,0],[8,8]], azul:[[8,0],[0,8]], verde:[[3,0],[5,8]], amarelo:[[5,0],[3,8]], ciano:[[0,4],[8,4]], roxo:[[4,0],[4,8]], laranja:[[1,1],[7,7]], marrom:[[2,2],[6,6]], branco:[[3,4],[5,4]], rosa:[[4,2],[4,6]] }},
+  expert: [
+  { size:9, pairs:{ vermelho:[[0,0],[8,8]], azul:[[8,0],[0,8]], verde:[[3,0],[5,8]], amarelo:[[5,0],[3,8]], ciano:[[0,4],[8,4]], roxo:[[4,0],[4,8]], laranja:[[1,1],[7,7]], marrom:[[2,2],[6,6]], branco:[[3,4],[5,4]], rosa:[[4,2],[4,6]] }},
     { size:9, pairs:{ vermelho:[[0,0],[7,6]], azul:[[6,0],[0,7]], verde:[[0,6],[8,2]], amarelo:[[5,1],[1,8]], ciano:[[8,0],[0,3]], roxo:[[2,3],[7,5]], laranja:[[3,4],[6,4]], marrom:[[1,2],[7,6]], branco:[[4,1],[5,7]], rosa:[[2,5],[6,3]] }},
     { size:9, pairs:{ vermelho:[[0,1],[8,7]], azul:[[1,0],[7,8]], verde:[[0,7],[8,1]], amarelo:[[3,2],[5,6]], ciano:[[2,3],[6,5]], roxo:[[3,6],[5,2]], laranja:[[1,4],[7,4]], marrom:[[2,1],[6,7]], branco:[[4,0],[4,8]], rosa:[[2,6],[6,2]] }},
     { size:9, pairs:{ vermelho:[[0,0],[5,5]], azul:[[5,0],[0,6]], verde:[[0,5],[8,3]], amarelo:[[4,1],[1,7]], ciano:[[8,1],[0,4]], roxo:[[3,3],[6,5]], laranja:[[2,4],[7,4]], marrom:[[1,2],[7,6]], branco:[[4,2],[5,7]], rosa:[[3,1],[6,7]] }},
@@ -588,7 +602,6 @@ expert: [
     { size:9, pairs:{ vermelho:[[0,0],[6,5]], azul:[[5,0],[0,6]], verde:[[0,5],[8,3]], amarelo:[[5,1],[1,8]], ciano:[[8,1],[0,4]], roxo:[[3,3],[6,5]], laranja:[[2,4],[7,4]], marrom:[[1,2],[7,6]], branco:[[4,2],[5,7]], rosa:[[3,1],[6,7]] }},
   ]
 };
-
 // ══════════════════════════════════════════════
 // ESTADO GLOBAL
 // ══════════════════════════════════════════════
@@ -630,7 +643,7 @@ function showToast(msg, duration=2000){
   t.textContent = msg;
   t.classList.add('show');
   setTimeout(()=>t.classList.remove('show'), duration);
-    }
+  }
 // ══════════════════════════════════════════════
 // DIFF / LEVEL SELECT
 // ══════════════════════════════════════════════
@@ -661,8 +674,8 @@ function buildLevelGrid(){
     btn.onclick = () => startLevel(i);
     grid.appendChild(btn);
   });
-  }
-// ══════════════════════════════════════════════
+    }
+ // ══════════════════════════════════════════════
 // INICIAR NÍVEL
 // ══════════════════════════════════════════════
 function startLevel(idx){
@@ -684,7 +697,8 @@ function startLevel(idx){
   document.getElementById('statCoverage').textContent = '0%';
   document.getElementById('progressFill').style.width = '0%';
   document.getElementById('winOverlay').classList.remove('show');
-// Inicializar dots
+
+  // Inicializar dots
   for(const [color, pts] of Object.entries(levelData.pairs)){
     dots[key(pts[0][0], pts[0][1])] = color;
     dots[key(pts[1][0], pts[1][1])] = color;
@@ -706,8 +720,8 @@ function setupCanvas(){
   canvas.height = cellSize * gridRows;
   canvas.style.width  = canvas.width  + 'px';
   canvas.style.height = canvas.height + 'px';
-    }
- // ══════════════════════════════════════════════
+}
+// ══════════════════════════════════════════════
 // RENDER
 // ══════════════════════════════════════════════
 function render(){
@@ -723,8 +737,9 @@ function render(){
       roundRect(ctx, x+2, y+2, cellSize-4, cellSize-4, 8);
       ctx.fill();
     }
-      }
-// Paths
+  }
+
+  // Paths
   for(const [color, path] of Object.entries(paths)){
     if(path.length < 2) continue;
     ctx.strokeStyle = COLORS[color];
@@ -738,8 +753,9 @@ function render(){
       ctx.lineTo(path[i][0]*cellSize + cellSize/2, path[i][1]*cellSize + cellSize/2);
     ctx.stroke();
     ctx.globalAlpha = 1;
- }
-// Drawing path
+  }
+ 
+  // Drawing path
   if(drawing && drawing.path.length >= 2){
     const color = drawing.color;
     ctx.strokeStyle = COLORS[color];
@@ -754,8 +770,9 @@ function render(){
       ctx.lineTo(p[i][0]*cellSize+cellSize/2, p[i][1]*cellSize+cellSize/2);
     ctx.stroke();
     ctx.globalAlpha = 1;
- }
-// Dots
+  }
+
+  // Dots
   for(const [k2, color] of Object.entries(dots)){
     const [c,r] = k2.split(',').map(Number);
     const x = c*cellSize+cellSize/2, y = r*cellSize+cellSize/2;
@@ -774,6 +791,7 @@ function render(){
     ctx.fill();
   }
 }
+
 function roundRect(ctx, x, y, w, h, r){
   ctx.beginPath();
   ctx.moveTo(x+r,y);
@@ -787,7 +805,6 @@ function roundRect(ctx, x, y, w, h, r){
   ctx.arcTo(x,y,x+r,y,r);
   ctx.closePath();
 }
-
 // ══════════════════════════════════════════════
 // INPUT
 // ══════════════════════════════════════════════
@@ -815,7 +832,7 @@ function onStart(e){
   const k2 = key(c,r);
   const color = dots[k2];
   if(!color) return;
-// Se já há um path desta cor, limpar
+  // Se já há um path desta cor, limpar
   if(paths[color]) { clearPath(color); }
   drawing = { color, path: [[c,r]] };
   render();
@@ -829,8 +846,7 @@ function onMove(e){
   const p = drawing.path;
   const last = p[p.length-1];
   if(c===last[0]&&r===last[1]) return;
-
-  // Só permitir adjacente
+// Só permitir adjacente
   const dc=Math.abs(c-last[0]), dr=Math.abs(r-last[1]);
   if(dc+dr!==1) return;
 
@@ -838,8 +854,9 @@ function onMove(e){
   if(p.length>=2){
     const prev = p[p.length-2];
     if(c===prev[0]&&r===prev[1]){ p.pop(); render(); return; }
-  }  
-// Verificar célula bloqueada por outro path
+  }
+
+  // Verificar célula bloqueada por outro path
   const k2 = key(c,r);
   for(const [col, path2] of Object.entries(paths)){
     if(col===drawing.color) continue;
@@ -877,7 +894,8 @@ function commitPath(){
   updateStats();
   render();
   checkWin();
-  }
+}
+
 function clearPath(color){
   delete paths[color];
   updateStats();
@@ -898,6 +916,7 @@ function updateStats(){
   document.getElementById('statCoverage').textContent = `${pct}%`;
   document.getElementById('progressFill').style.width = `${pct}%`;
 }
+
 // ══════════════════════════════════════════════
 // WIN CHECK
 // ══════════════════════════════════════════════
@@ -913,24 +932,24 @@ function checkWin(){
   });
   if(!connected) return;
 
-  // Verificar cobertura total
-  const covered = new Set();
-  for(const path of Object.values(paths))
-    path.forEach(([c,r])=>covered.add(key(c,r)));
-  const total = gridCols*gridRows;
-  if(covered.size<total){
-    showToast('⚠️ Preencha todas as células!');
-    return;
-  }
-
+  // Cobertura total = bônus de estrela extra, não obrigatório
   showWin();
 }
 
 function showWin(){
   const elapsed = Math.round((Date.now()-startTime)/1000);
   const pairs = Object.keys(levelData.pairs).length;
-  const optMoves = pairs * 2;
-  const stars = moves <= optMoves ? 3 : moves <= optMoves*1.8 ? 2 : 1;
+
+  // Cobertura
+  const covered = new Set();
+  for(const path of Object.values(paths))
+    path.forEach(([c,r])=>covered.add(key(c,r)));
+  const total = gridCols*gridRows;
+  const fullCoverage = covered.size >= total;
+
+  const optMoves = pairs * 3;
+  let stars = moves <= optMoves ? 2 : 1;
+  if(fullCoverage) stars = 3; // 3 estrelas só com cobertura total
 
   const k = `${currentDiff}_${currentLevelIdx}`;
   const prev = progress[k];
@@ -976,13 +995,12 @@ function nextLevel(){
     showToast('🏆 Você completou todos os níveis!', 3000);
     showScreen('levelSelect');
   }
-    }
+}
+
 function resetLevel(){
   document.getElementById('winOverlay').classList.remove('show');
   startLevel(currentLevelIdx);
-}
-
-// ══════════════════════════════════════════════
+ // ══════════════════════════════════════════════
 // HINT
 // ══════════════════════════════════════════════
 function useHint(){
@@ -1004,6 +1022,11 @@ function useHint(){
 // ══════════════════════════════════════════════
 // EVENTOS CANVAS
 // ══════════════════════════════════════════════
+// Register Service Worker
+if('serviceWorker' in navigator){
+  navigator.serviceWorker.register('./sw.js').catch(()=>{});
+}
+
 window.addEventListener('load', () => {
   canvas = document.getElementById('canvas');
   ctx = canvas.getContext('2d');
@@ -1022,8 +1045,4 @@ window.addEventListener('load', () => {
 });
 </script>
 </body>
-</html>    
-      
-                 
-  
-        
+</html> 
